@@ -8,6 +8,25 @@ This project demonstrates the containerization of a multi-tier Java web applicat
 
 The application is deployed as containers and orchestrated with Docker Compose.
 
+## Prerequisites
+- Docker Setup on Ubuntu
+    ```bash
+    sudo apt update
+    sudo apt install curl
+    sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/docker.gpg
+    sudo add-apt-repository "deb [arch=$(dpkg --print-architecture)] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+    sudo apt update
+    sudo apt -y install lsb-release gnupg apt-transport-https ca-certificates curl software-properties-common
+    sudo apt -y install docker-ce docker-ce-cli containerd.io docker-compose-plugin docker-registry
+    sudo usermod -aG docker $USER
+    newgrp docker
+    ```
+- Check Docker service status
+    ```bash
+    docker compose version
+    systemctl status docker.service
+    ```
+    
 ## Project Setup
 ### 1. Clone the project repository
 ```bash
