@@ -1,18 +1,17 @@
 version: "3"
 services:
   db01:
-    image: akramgalal/node.js:db
+    image: vprocontainers/vprofiledb
     container_name: db01
     ports:
       - "3306:3306"
     volumes:
       - dbdata:/var/lib/mysql
     environment:
-      - MYSQL_USERNAME=admin
-      - MYSQL_ROOT_PASSWORD=admin123
+      - MYSQL_ROOT_PASSWORD=vprodbpass
 
   mc01:
-    image: akramgalal/node.js:mmc
+    image: memcached
     container_name: mc01
     ports:
       - "11211:11211"
@@ -20,7 +19,7 @@ services:
       - db01  
 
   rmq01:
-    image: akramgalal/node.js:rmc
+    image: rabbitmq
     container_name: rmq01
     ports:
       - "15672:15672"
@@ -29,7 +28,7 @@ services:
       - RABBITMQ_DEFAULT_PASS=test
 
   app01:
-    image: akramgalal/node.js:app
+    image: vprocontainers/vprofileapp
     container_name: app01
     ports:
       - "8080:8080"
@@ -39,7 +38,7 @@ services:
       - db01  
 
   lb01:
-    image: akramgalal/node.js:lb
+    image: vprocontainers/vprofileweb
     container_name: web01
     ports:
       - "80:80"
