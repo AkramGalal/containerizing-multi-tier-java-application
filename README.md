@@ -11,7 +11,7 @@ The application is deployed as containers and orchestrated with Docker Compose.
 ## Project Setup
 ### 1. Clone the project repository
 ```bash
-git clone -b main https://github.com/hkhcoder/vprofile-project.git
+git clone -b main git clone https://github.com/devopshydclub/vprofile-project.git
 cd vprofile-project
 ```
 
