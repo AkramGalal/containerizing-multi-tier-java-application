@@ -12,78 +12,37 @@ The application is deployed as containers and orchestrated with Docker Compose.
 ### 1. Create Docker Images for Microservices
 ### 1.1 Application Server (Tomcat)
 - Use a Tomcat image matching your Java version (Java 11).  
-- Dockerfile:
-```dockerfile
-FROM openjdk:11 AS build_image
-RUN apt update && apt install maven -y
-RUN git clone https://github.com/devopshydclub/vprofile-project.git
-RUN cd vprofile-project && git checkout docker &&  mvn install 
-
-FROM tomcat:9-jre11
-LABEL "Project"="Vprofile"
-RUN rm -rf /usr/local/tomcat/webapps/*
-COPY --from=build_image vprofile-project/target/vprofile-v2.war /usr/local/tomcat/webapps/ROOT.war
-EXPOSE 8080
-CMD ["catalina.sh", "run"]
-```
-- Build the image:
-```bash
-docker build -t app:v1 .
-```
+- Build the image from Dockerfile
+ ```bash
+ docker build -t app:v1 .
+ ```
 
 ### 1.2 Database (MySQL)
 - Use MySQL image (version 8.0.33).  
-- Dockerfile:
-```dockerfile
-FROM mysql:8.0.33
-LABEL "Project"="Vprofile"
-ENV MYSQL_ROOT_PASSWORD="vprodbpass"
-ENV MYSQL_DATABASE="accounts"
-ADD db_backup.sql docker-entrypoint-initdb.d/db_backup.sql
-```
-
-- Build the image:
-```bash
-docker build -t db:v1 .
-```
+- Build the image from Dockerfile
+ ```bash
+ docker build -t db:v1 .
+ ```
 
 ### 1.3 Nginx Load Balancer
 - Use the latest Nginx image.  
-- Create configuration file `nginx.conf`:
-```nginx
-upstream vproapp {
- server vproapp:8080;
-}
-server {
-  listen 80;
-location / {
-  proxy_pass http://vproapp;
-}
-}
-```
-- Dockerfile:
-```dockerfile
-FROM nginx
-LABEL "Project"="Vprofile"
-RUN rm -rf /etc/nginx/conf.d/default.conf
-COPY nginvproapp.conf /etc/nginx/conf.d/vproapp.conf
-```
-- Build the image:
-```bash
-docker build -t lb:v1 .
-```
+- Create configuration file `nginx.conf`.
+- Build the image from Dockerfile
+ ```bash
+ docker build -t lb:v1 .
+ ```
 
 ### 1.4 RabbitMQ
 - Use the latest RabbitMQ image:
-```bash
-docker pull rabbitmq
-```
+ ```bash
+ docker pull rabbitmq
+ ```
 
 ### 1.5 Memcached
 - Use the latest Memcached image:
-```bash
-docker pull memcached
-```
+ ```bash
+ docker pull memcached
+ ```
 
 ## 2. Push Images to Docker Hub
   1. Login to Docker Hub:
@@ -101,17 +60,20 @@ docker pull memcached
 
 ## 3. Docker Compose Setup
   - Create `docker-compose.yml`
-  - Start the multi-tier application:
+  - Start the multi-tier application using the docker compose file.
     ```bash
     docker compose up -d
     ```
 
 ## 5. Testing
   - Ensure all containers are running:
-  ```bash
-  docker ps
-  ```
-  <img width="3359" height="225" alt="Screenshot 2025-09-07 024345" src="https://github.com/user-attachments/assets/d958e380-cb73-47f4-8ffc-b23929d53a8a" />
+    ```bash
+    docker ps -a
+    ```
+    <img width="3345" height="859" alt="Screenshot 2025-09-21 020407" src="https://github.com/user-attachments/assets/76f5f1b9-025c-430e-a397-8d074f705372" />
+  
+  - Access the application from the localhost IP at `http:192.168.242.130`
+    
+    <img width="3763" height="1924" alt="Screenshot 2025-09-21 020609" src="https://github.com/user-attachments/assets/b5bb885d-7552-45d8-9587-d8086da30536" />
 
-  - Access the application via the load balancer at `http://localhost`
 
